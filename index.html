@@ -21,9 +21,9 @@ p{margin:0 0 14px}
 section{display:none;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px}
 section.on{display:block}
 label{display:block;font:600 .95rem system-ui,sans-serif;margin:14px 0 4px}
-input,textarea{width:100%;padding:10px 12px;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px}
+input,textarea,select{width:100%;padding:10px 12px;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px}
 textarea{min-height:240px;resize:vertical}
-input:focus,textarea:focus,button:focus-visible,a.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+input:focus,textarea:focus,select:focus,button:focus-visible,a.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:520px){.row{grid-template-columns:1fr}}
 button,a.btn{display:inline-block;margin-top:18px;padding:11px 22px;font:600 1rem system-ui,sans-serif;background:var(--accent);color:var(--accent-ink);border:0;border-radius:6px;cursor:pointer;text-decoration:none}
@@ -81,6 +81,35 @@ figure p{margin:0 0 8px}
   <div class="err" id="eq" role="alert"></div>
   <button id="yes">Ja / はい / Yes</button>
   <button class="ghost" id="no">Nein / いいえ / No</button>
+</section>
+
+<!-- Frage: bisherige Deutschkenntnisse (nur bei "Ja") -->
+<section id="sb">
+  <h2>Ihre bisherigen Deutschkenntnisse<br>これまでのドイツ語学習について</h2>
+
+  <label for="c1">Haben Sie Deutschkurse besucht? / ドイツ語のコースに通ったことがありますか？</label>
+  <select id="c1"><option value="">– bitte wählen / 選択してください –</option><option value="y">Ja / はい</option><option value="n">Nein / いいえ</option></select>
+  <div id="c1x" hidden>
+    <label for="c1l">Welches Niveau? / どのレベルまで学びましたか？</label>
+    <select id="c1l"><option value="">– bitte wählen / 選択してください –</option><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option><option value="unbekannt">Weiß ich nicht / 分からない</option></select>
+  </div>
+
+  <label for="z1">Haben Sie ein Zertifikat erworben? / ドイツ語の資格（試験の合格証など）を取得しましたか？</label>
+  <select id="z1"><option value="">– bitte wählen / 選択してください –</option><option value="y">Ja / はい</option><option value="n">Nein / いいえ</option></select>
+  <div id="z1x" hidden>
+    <label for="z1t">Welches Zertifikat und welches Niveau? / どの資格で、どのレベルですか？</label>
+    <input id="z1t" placeholder="z. B. Goethe-Zertifikat B1 / 例：ゲーテ・ツェルティフィカート B1">
+  </div>
+
+  <label for="n1">Lernen Sie jetzt gerade Deutsch? / 現在ドイツ語を勉強していますか？</label>
+  <select id="n1"><option value="">– bitte wählen / 選択してください –</option><option value="y">Ja / はい</option><option value="n">Nein / いいえ</option></select>
+  <div id="n1x" hidden>
+    <label for="n1t">Wo und wie oft? / どこで、どのくらいの頻度で？</label>
+    <input id="n1t" placeholder="z. B. Sprachschule, 2x pro Woche / 例：語学学校、週2回">
+  </div>
+
+  <div class="err" id="eb" role="alert"></div>
+  <button id="bb">Weiter / 次へ</button>
 </section>
 
 <!-- Schritt 2 -->
@@ -153,7 +182,7 @@ figure p{margin:0 0 8px}
 
 const $ = id => document.getElementById(id);
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const SECTIONS = ["s0","s1","sq","s2","s3","se","s4"];
+const SECTIONS = ["s0","s1","sq","sb","s2","s3","se","s4"];
 let pid = null, info = null, learned = null;
 
 function show(name){
@@ -187,18 +216,34 @@ $("b1").onclick = () => {
 };
 
 // Frage beantworten: Person speichern und verzweigen
-async function choose(yes){
-  $("eq").textContent = ""; $("yes").disabled = $("no").disabled = true;
+async function choose(yes, extra = {}){
+  const errId = yes ? "eb" : "eq";
+  $(errId).textContent = ""; $("yes").disabled = $("no").disabled = $("bb").disabled = true;
   const id = crypto.randomUUID();
-  const { error } = await sb.from("participants").insert({ id, ...info, learned_german: yes });
-  $("yes").disabled = $("no").disabled = false;
-  if(error){ $("eq").textContent = "Speichern nicht möglich. Bitte noch einmal versuchen. / 保存できませんでした。もう一度お試しください。 / Could not save. Please try again."; console.error(error); return; }
+  const { error } = await sb.from("participants").insert({ id, ...info, ...extra, learned_german: yes });
+  $("yes").disabled = $("no").disabled = $("bb").disabled = false;
+  if(error){ $(errId).textContent = "Speichern nicht möglich. Bitte noch einmal versuchen. / 保存できませんでした。もう一度お試しください。 / Could not save. Please try again."; console.error(error); return; }
   pid = id; learned = yes;
   try{ sessionStorage.setItem("pid", id); sessionStorage.setItem("learned", yes ? "1" : "0"); }catch(e){}
   show(yes ? "s2" : "se");
 }
-$("yes").onclick = () => choose(true);
+$("yes").onclick = () => show("sb");
 $("no").onclick = () => choose(false);
+
+// Seite "bisherige Deutschkenntnisse"
+[["c1","c1x"],["z1","z1x"],["n1","n1x"]].forEach(([s,x]) => { $(s).onchange = () => { $(x).hidden = $(s).value !== "y"; }; });
+$("bb").onclick = () => {
+  const c = $("c1").value, z = $("z1").value, n = $("n1").value;
+  const cl = $("c1l").value, zt = $("z1t").value.trim(), nt = $("n1t").value.trim();
+  if(!c || !z || !n || (c === "y" && !cl) || (z === "y" && !zt) || (n === "y" && !nt)){
+    $("eb").textContent = "Bitte alle Fragen beantworten. / すべての質問に答えてください。 / Please answer all questions."; return;
+  }
+  choose(true, {
+    courses_attended: c === "y", courses_level: c === "y" ? cl : null,
+    certificate: z === "y", certificate_info: z === "y" ? zt : null,
+    learning_now: n === "y", learning_info: n === "y" ? nt : null
+  });
+};
 
 $("b2").onclick = () => show("s3");
 

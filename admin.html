@@ -111,6 +111,10 @@ function card(p){
     el("span", {className:"badge" + (done ? " ok" : ""), textContent: done ? "Bewertet: " + w.final_level : (w ? "Text eingegangen" : "Kein Text")})
   ));
   c.append(el("div", {className:"meta", textContent: [p.email, p.native_language, p.learned_german === false ? "noch kein Deutsch gelernt" : null, fmt(p.created_at)].filter(Boolean).join(" · ")}));
+  if(p.learned_german){
+    const yn = (v, info) => v == null ? "–" : v ? "ja" + (info ? " (" + info + ")" : "") : "nein";
+    c.append(el("div", {className:"meta", textContent: "Kurse: " + yn(p.courses_attended, p.courses_level) + " · Zertifikat: " + yn(p.certificate, p.certificate_info) + " · lernt jetzt: " + yn(p.learning_now, p.learning_info)}));
+  }
   if(!w) return c;
 
   c.append(el("div", {className:"meta", textContent: w.word_count + " Wörter · Text auf " + (w.language === "en" ? "Englisch" : "Deutsch")}));
