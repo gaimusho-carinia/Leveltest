@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Einstufungstest Deutsch</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#222;--muted:#666;--line:#ddd8cc;--accent:#a62c4b;--accent-ink:#fff;--ok:#2d6a4f}
+@media (prefers-color-scheme:dark){:root{--bg:#1b1a1c;--card:#262528;--ink:#eee;--muted:#aaa;--line:#3a383d;--accent:#e0607e;--accent-ink:#1b1a1c;--ok:#7bc8a0}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Georgia,"Times New Roman",serif}
+main{max-width:720px;margin:0 auto;padding:28px 18px 60px}
+h1{font-size:1.7rem;margin:0 0 4px}
+h2{font-size:1.25rem;margin:0 0 12px}
+p{margin:0 0 14px}
+.sub{color:var(--muted);margin-bottom:22px}
+.steps{display:flex;gap:8px;margin-bottom:22px;font:600 .9rem system-ui,sans-serif}
+.steps span{flex:1;padding:8px 10px;border-bottom:3px solid var(--line);color:var(--muted)}
+.steps span.on{border-color:var(--accent);color:var(--ink)}
+.steps span.done{border-color:var(--ok);color:var(--ok)}
+section{display:none;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px}
+section.on{display:block}
+label{display:block;font:600 .95rem system-ui,sans-serif;margin:14px 0 4px}
+input,textarea{width:100%;padding:10px 12px;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px}
+textarea{min-height:240px;resize:vertical}
+input:focus,textarea:focus,button:focus-visible,a.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+button,a.btn{display:inline-block;margin-top:18px;padding:11px 22px;font:600 1rem system-ui,sans-serif;background:var(--accent);color:var(--accent-ink);border:0;border-radius:6px;cursor:pointer;text-decoration:none}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);margin-left:8px}
+button:disabled{opacity:.5;cursor:wait}
+figure{margin:18px 0}
+figure img{width:100%;height:auto;border:1px solid var(--line);border-radius:6px;display:block}
+figcaption{margin-top:8px}
+.task{background:var(--bg);border-left:4px solid var(--accent);padding:12px 14px;margin-bottom:8px}
+.count{font:.9rem system-ui,sans-serif;color:var(--muted);margin-top:4px}
+.err{color:#b3261e;font:.95rem system-ui,sans-serif;margin-top:10px;min-height:1.2em}
+@media (prefers-color-scheme:dark){.err{color:#ff8a80}}
+</style>
+</head>
+<body>
+<main>
+<h1>Einstufungstest Deutsch</h1>
+<p class="sub">Bitte füllen Sie die Felder aus. / 各項目を入力してください。 / Please fill in the fields.</p>
+
+<div class="steps" id="steps"><span>1. Online-Test</span><span>2. Schreiben</span></div>
+
+<!-- Schritt 1 -->
+<section id="s1" class="on">
+  <h2>Ihre Angaben / ご自身について / Your details</h2>
+  <div class="row">
+    <div><label for="fn">Vorname / 名 / First name</label><input id="fn" autocomplete="given-name"></div>
+    <div><label for="ln">Familienname / 姓 / Last name</label><input id="ln" autocomplete="family-name"></div>
+  </div>
+  <label for="em">E-Mail-Adresse / メールアドレス / Email address</label><input id="em" type="email" autocomplete="email">
+  <label for="nl">Muttersprache / 母語 / Native language</label><input id="nl">
+  <div class="err" id="e1" role="alert"></div>
+  <button id="b1">Weiter / 次へ / Next</button>
+</section>
+
+<!-- Frage: Deutsch gelernt? -->
+<section id="sq">
+  <h2>Haben Sie schon Deutsch gelernt?<br>これまでにドイツ語を勉強したことがありますか？<br>Have you learned German before?</h2>
+  <p>Ja: Sie machen einen Online-Test und schreiben einen Text auf Deutsch.<br>
+     Nein: Sie schreiben nur einen kurzen Text auf Englisch.</p>
+  <p>「はい」：オンラインテストを受け、ドイツ語で文章を書きます。<br>
+     「いいえ」：英語で短い文章を書くだけです。</p>
+  <p>Yes: You take an online test and write a text in German.<br>
+     No: You only write a short text in English.</p>
+  <div class="err" id="eq" role="alert"></div>
+  <button id="yes">Ja / はい / Yes</button>
+  <button class="ghost" id="no">Nein / いいえ / No</button>
+</section>
+
+<!-- Schritt 2 -->
+<section id="s2">
+  <h2>Online-Test von Klett</h2>
+  <p>Der Test öffnet sich in einem neuen Fenster. Bitte lesen Sie zuerst die drei Hinweise.</p>
+
+  <figure><img src="images/schritt1.png" alt="Startseite des Klett-Tests mit dem Button „Weiter“">
+    <figcaption><b>1.</b> Klicken Sie auf „Weiter“. Der Test hat 64 Fragen zu Lesen, Grammatik, Wortschatz und Hören. Wenn der Test zu schwierig wird, hören Sie einfach auf und klicken Sie auf „ALLES EINREICHEN“. Der Test ist für alle Niveaustufen. Wenn Sie nichts mehr verstehen, senden Sie die bearbeiteten Aufgaben. Sie werden automatisch eingestuft. Vergessen Sie dann nicht die Schreibaufgabe. Sie wird von der Leitung gelesen und bewertet.</figcaption></figure>
+
+  <figure><img src="images/schritt2.png" alt="Seite im Klett-Test mit den Feldern Name und E-Mail">
+    <figcaption><b>2.</b> Schreiben Sie hier Ihren <b>Vornamen und Familiennamen</b>. Schreiben Sie bitte diese E-Mail-Adresse: <b>carinia.gaimusho@gmail.com</b></figcaption></figure>
+
+  <figure><img src="images/schritt3.png" alt="Erste Aufgabe im Klett-Test mit dem Button „ALLES EINREICHEN“ unten links">
+    <figcaption><b>3.</b> Machen Sie den Test, so weit Sie können. Wenn es zu schwierig wird, klicken Sie unten links auf „ALLES EINREICHEN“. Da der Test für alle Niveaustufen ist, ist es nicht schlimm, wenn Sie nicht alles können. Schließen Sie danach das Testfenster, kommen Sie zu diesem Fenster zurück und schreiben Sie noch den Text.</figcaption></figure>
+
+  <a class="btn" href="https://einstufungstests.klett-sprachen.de/eks/DaF-A1-C1/" target="_blank" rel="noopener">Test in neuem Fenster öffnen</a>
+  <button class="ghost" id="b2">Ich habe den Test gemacht</button>
+</section>
+
+<!-- Schritt 3 -->
+<section id="s3">
+  <h2>Schreibaufgabe</h2>
+  <div class="task" id="task"></div>
+  <label for="tx">Ihr Text</label>
+  <textarea id="tx"></textarea>
+  <div class="count" id="count">0 Wörter</div>
+  <div class="err" id="e3" role="alert"></div>
+  <button id="b3">Text abschicken</button>
+</section>
+
+<!-- Schreiben auf Englisch (ohne Deutschkenntnisse): Anweisungen auf Japanisch -->
+<section id="se">
+  <h2>ライティング課題 / Writing task</h2>
+  <div class="task" id="taskEn"></div>
+  <label for="tx2">あなたの文章（英語で書いてください） / Your text (in English)</label>
+  <textarea id="tx2" lang="en"></textarea>
+  <div class="count" id="count2">0 語 / words</div>
+  <div class="err" id="e5" role="alert"></div>
+  <button id="b5">送信する / Send text</button>
+</section>
+
+<!-- Fertig -->
+<section id="s4">
+  <h2>Vielen Dank! / ありがとうございました / Thank you!</h2>
+  <p>Ihre Angaben und Ihr Text sind angekommen. Wir melden uns bei Ihnen mit Ihrer Einstufung.</p>
+  <p>内容を受け取りました。レベル判定の結果は、後日あらためてご連絡します。</p>
+  <p>We have received your details and your text. We will contact you with your placement result.</p>
+</section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+/* ===== HIER ANPASSEN ===== */
+const SUPABASE_URL = "https://DEIN-PROJEKT.supabase.co";
+const SUPABASE_KEY = "DEIN-ANON-KEY";   // der öffentliche "anon"-Key, NICHT der service_role-Key
+const TASK = "Schreiben Sie einen Text über sich (ca. 80–150 Wörter): Wer sind Sie? Was machen Sie beruflich oder in Ihrer Freizeit? Warum lernen Sie Deutsch und was möchten Sie damit erreichen?";
+/* ========================= */
+
+const TASK_JA = "あなた自身とこれまでの経験について、英語で書いてください（80〜150語程度）。あなたはどんな人ですか？ 仕事や勉強、趣味は何ですか？ 大切な場所や経験は何ですか？ なぜドイツ語を学びたいですか？";
+const TASK_EN = "Please write a text in English (about 80–150 words) about yourself and your experiences: Who are you? What do you do? Which places, jobs, studies or other experiences are important to you? Why do you want to learn German?";
+
+const $ = id => document.getElementById(id);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SECTIONS = ["s1","sq","s2","s3","se","s4"];
+let pid = null, info = null, learned = null;
+
+function show(name){
+  SECTIONS.forEach(s => $(s).classList.toggle("on", s === name));
+  const idx = name === "s2" ? 0 : name === "s3" ? 1 : -1;
+  $("steps").style.display = idx < 0 ? "none" : "flex";
+  [...$("steps").children].forEach((el,i) => { el.className = i < idx ? "done" : i === idx ? "on" : ""; });
+  window.scrollTo(0,0);
+  try{ sessionStorage.setItem("sec", name); }catch(e){}
+}
+$("task").textContent = TASK;
+$("taskEn").replaceChildren(...[TASK_JA, TASK_EN].map(t => { const p = document.createElement("p"); p.textContent = t; return p; }));
+
+// Schritt 1: Angaben merken, dann Frage zeigen
+$("b1").onclick = () => {
+  const fn=$("fn").value.trim(), ln=$("ln").value.trim(), em=$("em").value.trim(), nl=$("nl").value.trim();
+  if(!fn || !ln || !/^\S+@\S+\.\S+$/.test(em)){ $("e1").textContent="Bitte alle Felder ausfüllen und eine gültige E-Mail-Adresse eintragen. / すべての項目を入力し、正しいメールアドレスを入力してください。 / Please fill in all fields and enter a valid email address."; return; }
+  $("e1").textContent = "";
+  info = { first_name:fn, last_name:ln, email:em, native_language:nl || null };
+  show("sq");
+};
+
+// Frage beantworten: Person speichern und verzweigen
+async function choose(yes){
+  $("eq").textContent = ""; $("yes").disabled = $("no").disabled = true;
+  const id = crypto.randomUUID();
+  const { error } = await sb.from("participants").insert({ id, ...info, learned_german: yes });
+  $("yes").disabled = $("no").disabled = false;
+  if(error){ $("eq").textContent = "Speichern nicht möglich. Bitte noch einmal versuchen. / 保存できませんでした。もう一度お試しください。 / Could not save. Please try again."; console.error(error); return; }
+  pid = id; learned = yes;
+  try{ sessionStorage.setItem("pid", id); sessionStorage.setItem("learned", yes ? "1" : "0"); }catch(e){}
+  show(yes ? "s2" : "se");
+}
+$("yes").onclick = () => choose(true);
+$("no").onclick = () => choose(false);
+
+$("b2").onclick = () => show("s3");
+
+const words = s => (s.trim().match(/\S+/g) || []).length;
+$("tx").oninput  = () => { $("count").textContent  = words($("tx").value)  + " Wörter"; };
+$("tx2").oninput = () => { $("count2").textContent = words($("tx2").value) + " 語 / words"; };
+
+async function send(textId, errId, btnId, lang){
+  const text = $(textId).value.trim();
+  const en = lang === "en";
+  if(words(text) < 10){ $(errId).textContent = en ? "少なくとも数文は書いてください。 / Please write at least a few sentences." : "Bitte schreiben Sie mindestens ein paar Sätze."; return; }
+  if(!pid){ $(errId).textContent = en ? "最初のページからやり直してください。 / Please start again at the first page." : "Bitte starten Sie bei Schritt 1 noch einmal."; return; }
+  $(errId).textContent = ""; $(btnId).disabled = true;
+  const { error } = await sb.from("writings").insert({ participant_id:pid, text, word_count:words(text), language:lang });
+  $(btnId).disabled = false;
+  if(error){ $(errId).textContent = en ? "文章を保存できませんでした。もう一度お試しください。念のため、文章をコピーしておいてください。 / Your text could not be saved. Please try again and copy your text to be safe." : "Der Text konnte nicht gespeichert werden. Bitte versuchen Sie es noch einmal. Kopieren Sie Ihren Text sicherheitshalber."; console.error(error); return; }
+  try{ sessionStorage.clear(); }catch(e){}
+  show("s4");
+}
+$("b3").onclick = () => send("tx",  "e3", "b3", "de");
+$("b5").onclick = () => send("tx2", "e5", "b5", "en");
+
+// Nach dem Neuladen an der gleichen Stelle weitermachen
+try{
+  const p = sessionStorage.getItem("pid"), s = sessionStorage.getItem("sec");
+  if(p && ["s2","s3","se"].includes(s)){ pid = p; show(s); }
+}catch(e){}
+</script>
+</body>
+</html>
